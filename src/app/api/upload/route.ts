@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { NextResponse } from 'next/server'
 import chalk from 'chalk'
 import { PutObjectCommand } from '@aws-sdk/client-s3'
@@ -9,11 +10,14 @@ export async function POST(request: Request) {
 	try {
 		console.log(chalk.yellow(`Generating an upload URL!`))
 
+		// Generate a unique file name
+		const fileName = uuidv4() + '.pdf';
+
 		const signedUrl = await getSignedUrl(
 			r2,
 			new PutObjectCommand({
 				Bucket: process.env.R2_BUCKET_NAME,
-				Key: `filenamde.pdf`,
+				Key: fileName,
 			}),
 			{ expiresIn: 60 }
 		)
